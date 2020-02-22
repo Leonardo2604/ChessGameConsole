@@ -17,5 +17,10 @@
             Board = board;
             Moved = false;
         }
+
+        public void SetMoved()
+        {
+            Moved = true;
+        }
     }
 }

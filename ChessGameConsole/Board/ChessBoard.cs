@@ -23,7 +23,7 @@ namespace ChessGameConsole.Board
             return _pieces[position.Row, position.Column];
         }
 
-        public void PutPiece(Position position, Piece piece)
+        public void AddPiece(Position position, Piece piece)
         {
             if (PieceExists(position))
             {
@@ -31,6 +31,19 @@ namespace ChessGameConsole.Board
             }
             _pieces[position.Row, position.Column] = piece;
             piece.Position = position;
+        }
+
+        public Piece RemovePiece(Position position)
+        {
+            Piece piece = Find(position);
+            if (piece == null)
+            {
+                return null;
+            }
+
+            piece.Position = null;
+            _pieces[position.Row, position.Column] = null;
+            return piece;
         }
 
         public bool PieceExists(Position position)
