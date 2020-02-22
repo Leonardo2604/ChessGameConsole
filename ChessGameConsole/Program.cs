@@ -8,8 +8,7 @@ namespace ChessGameConsole
         static void Main(string[] args)
         {
             ChessBoard board = new ChessBoard();
-            Position position = new Position(0, 0);
-            Console.WriteLine(position);
+            Screen.DrawBoard(board);
         }
     }
 }

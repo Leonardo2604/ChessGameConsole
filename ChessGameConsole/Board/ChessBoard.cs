@@ -8,5 +8,10 @@
         {
             _pieces = new Piece[8, 8];
         }
+
+        public Piece Find(int row, int column)
+        {
+            return _pieces[row, column];
+        }
     }
 }
