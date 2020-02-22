@@ -2,7 +2,9 @@
 {
     class ChessBoard
     {
-        private Piece[,] _pieces;
+        private readonly Piece[,] _pieces;
+        public const int rows = 8;
+        public const int columns = 8;
 
         public ChessBoard()
         {
@@ -12,6 +14,12 @@
         public Piece Find(int row, int column)
         {
             return _pieces[row, column];
+        }
+
+        public void PutPiece(Position position, Piece piece)
+        {
+            _pieces[position.Row, position.Column] = piece;
+            piece.Position = position;
         }
     }
 }

@@ -10,9 +10,9 @@
         
         public ChessBoard Board { get; protected set; }
 
-        public Piece(Position position, Color color, ChessBoard board)
+        public Piece(Color color, ChessBoard board)
         {
-            Position = position;
+            Position = null;
             Color = color;
             Board = board;
             Moved = false;
