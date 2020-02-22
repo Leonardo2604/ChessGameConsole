@@ -1,4 +1,6 @@
-﻿namespace ChessGameConsole.Board
+﻿using ChessGameConsole.Board.Exceptions;
+
+namespace ChessGameConsole.Board
 {
     class ChessBoard
     {
@@ -16,10 +18,43 @@
             return _pieces[row, column];
         }
 
+        public Piece Find(Position position)
+        {
+            return _pieces[position.Row, position.Column];
+        }
+
         public void PutPiece(Position position, Piece piece)
         {
+            if (PieceExists(position))
+            {
+                throw new ChessBoardException($"Já existe uma peça nessa posição {position}");
+            }
             _pieces[position.Row, position.Column] = piece;
             piece.Position = position;
+        }
+
+        public bool PieceExists(Position position)
+        {
+            ValidatePosition(position);
+            return Find(position) != null;
+        }
+
+        public bool ValidPositon(Position position) 
+        {
+            return (
+                position.Row < rows
+                && position.Row >= 0
+                && position.Column < columns
+                && position.Column >= 0
+            );
+        }
+
+        public void ValidatePosition(Position position)
+        {
+            if (ValidPositon(position) == false)
+            {
+                throw new ChessBoardException($"Posição inválida! {position}");
+            }
         }
     }
 }
