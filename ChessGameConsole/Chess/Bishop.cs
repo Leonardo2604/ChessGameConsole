@@ -2,9 +2,9 @@
 
 namespace ChessGameConsole.Chess
 {
-    class Tower : Piece
+    class Bishop : Piece
     {
-        public Tower(Color color, ChessBoard board) : base(color, board)
+        public Bishop(Color color, ChessBoard board) : base(color, board)
         {
 
         }
@@ -20,8 +20,8 @@ namespace ChessGameConsole.Chess
             bool[,] positions = new bool[ChessBoard.rows, ChessBoard.columns];
             Position position = new Position(0, 0);
 
-            // Norte
-            position.Set(Position.Row - 1, Position.Column);
+            // Noroeste
+            position.Set(Position.Row - 1, Position.Column - 1);
             while(Board.ValidPositon(position) && CanMove(position))
             {
                 positions[position.Row, position.Column] = true;
@@ -30,11 +30,11 @@ namespace ChessGameConsole.Chess
                 {
                     break;
                 }
-                position.Row -= 1;
+                position.Set(position.Row - 1, position.Column - 1);
             }
 
-            // Leste
-            position.Set(Position.Row, Position.Column + 1);
+            // Nordeste
+            position.Set(Position.Row - 1, Position.Column + 1);
             while (Board.ValidPositon(position) && CanMove(position))
             {
                 positions[position.Row, position.Column] = true;
@@ -43,11 +43,11 @@ namespace ChessGameConsole.Chess
                 {
                     break;
                 }
-                position.Column += 1;
+                position.Set(position.Row - 1, position.Column + 1);
             }
 
-            // Sul
-            position.Set(Position.Row + 1, Position.Column);
+            // Sudeste
+            position.Set(Position.Row + 1, Position.Column + 1);
             while (Board.ValidPositon(position) && CanMove(position))
             {
                 positions[position.Row, position.Column] = true;
@@ -56,11 +56,11 @@ namespace ChessGameConsole.Chess
                 {
                     break;
                 }
-                position.Row += 1;
+                position.Set(position.Row + 1, position.Column + 1);
             }
 
-            // Oeste
-            position.Set(Position.Row, Position.Column - 1);
+            // Sudoeste
+            position.Set(Position.Row + 1, Position.Column - 1);
             while (Board.ValidPositon(position) && CanMove(position))
             {
                 positions[position.Row, position.Column] = true;
@@ -69,7 +69,7 @@ namespace ChessGameConsole.Chess
                 {
                     break;
                 }
-                position.Column -= 1;
+                position.Set(position.Row + 1, position.Column - 1);
             }
 
             return positions;
@@ -77,7 +77,7 @@ namespace ChessGameConsole.Chess
 
         public override string ToString()
         {
-            return "T";
+            return "B";
         }
     }
 }

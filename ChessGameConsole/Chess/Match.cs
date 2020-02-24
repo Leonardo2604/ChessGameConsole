@@ -85,13 +85,39 @@ namespace ChessGameConsole.Chess
 
         public void StartPieces()
         {
-            AddNewPiece('a', 1, new Tower(Color.White, Board));
+            AddNewPiece('a', 1, new Rook(Color.White, Board));
+            AddNewPiece('b', 1, new Knight(Color.White, Board));
+            AddNewPiece('c', 1, new Bishop(Color.White, Board));
+            AddNewPiece('d', 1, new Queen(Color.White, Board));
             AddNewPiece('e', 1, new King(Color.White, Board));
-            AddNewPiece('h', 1, new Tower(Color.White, Board));
+            AddNewPiece('f', 1, new Bishop(Color.White, Board));
+            AddNewPiece('g', 1, new Knight(Color.White, Board));
+            AddNewPiece('h', 1, new Rook(Color.White, Board));
+            AddNewPiece('a', 2, new Pawn(Color.White, Board));
+            AddNewPiece('b', 2, new Pawn(Color.White, Board));
+            AddNewPiece('c', 2, new Pawn(Color.White, Board));
+            AddNewPiece('d', 2, new Pawn(Color.White, Board));
+            AddNewPiece('e', 2, new Pawn(Color.White, Board));
+            AddNewPiece('f', 2, new Pawn(Color.White, Board));
+            AddNewPiece('g', 2, new Pawn(Color.White, Board));
+            AddNewPiece('h', 2, new Pawn(Color.White, Board));
 
-            AddNewPiece('a', 8, new Tower(Color.Black, Board));
+            AddNewPiece('a', 8, new Rook(Color.Black, Board));
+            AddNewPiece('b', 8, new Knight(Color.Black, Board));
+            AddNewPiece('c', 8, new Bishop(Color.Black, Board));
+            AddNewPiece('d', 8, new Queen(Color.Black, Board));
             AddNewPiece('e', 8, new King(Color.Black, Board));
-            AddNewPiece('h', 8, new Tower(Color.Black, Board));
+            AddNewPiece('f', 8, new Bishop(Color.Black, Board));
+            AddNewPiece('g', 8, new Knight(Color.Black, Board));
+            AddNewPiece('h', 8, new Rook(Color.Black, Board));
+            AddNewPiece('a', 7, new Pawn(Color.Black, Board));
+            AddNewPiece('b', 7, new Pawn(Color.Black, Board));
+            AddNewPiece('c', 7, new Pawn(Color.Black, Board));
+            AddNewPiece('d', 7, new Pawn(Color.Black, Board));
+            AddNewPiece('e', 7, new Pawn(Color.Black, Board));
+            AddNewPiece('f', 7, new Pawn(Color.Black, Board));
+            AddNewPiece('g', 7, new Pawn(Color.Black, Board));
+            AddNewPiece('h', 7, new Pawn(Color.Black, Board));
         }
 
         public bool IsInCheck(Color color)
