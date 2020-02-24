@@ -1,6 +1,6 @@
 ﻿namespace ChessGameConsole.Board
 {
-    class Piece
+    abstract class Piece
     {
         public Position Position { get; set; }
 
@@ -22,5 +22,7 @@
         {
             Moved = true;
         }
+
+        public abstract bool[,] GetPossibleMoves();
     }
 }

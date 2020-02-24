@@ -21,6 +21,16 @@ namespace ChessGameConsole
                     Console.WriteLine();
                     Console.Write("Origem: ");
                     Position from = Screen.ReadChessPosition().ToPosition();
+
+                    Piece piece = match.Board.Find(from);
+
+                    if (piece != null)
+                    {
+                        Screen.Clear();
+                        Screen.DrawBoard(match.Board, piece.GetPossibleMoves());
+                    }
+
+                    Console.WriteLine();
                     Console.Write("Destino: ");
                     Position to = Screen.ReadChessPosition().ToPosition();
 

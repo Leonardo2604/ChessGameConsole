@@ -7,6 +7,11 @@
 
         public Position(int row, int column)
         {
+            Set(row, column);
+        }
+
+        public void Set(int row, int column)
+        {
             Row = row;
             Column = column;
         }
