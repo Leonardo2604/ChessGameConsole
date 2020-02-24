@@ -133,18 +133,59 @@ namespace ChessGameConsole.Chess
                 InCheck = false;
             }
 
-            Turn++;
-            ChangePlayer();
+            if (TestCheckmate(GetAdversary(CurrentPlayer)))
+            {
+                Finished = true;
+            }
+            else
+            {
+                Turn++;
+                ChangePlayer();
+            }
         }
 
-        public void UndoMove(Position from, Position to, Piece pieceCaptured)
+        public bool TestCheckmate(Color color)
+        {
+            if (!IsInCheck(color))
+            {
+                return false;
+            }
+
+            foreach (Piece piece in GetPiecesInGame(color))
+            {
+                bool[,] positions = piece.GetPossibleMoves();
+
+                for (int row = 0; row < ChessBoard.columns; row++)
+                {
+                    for (int column = 0; column < ChessBoard.rows; column++)
+                    {
+                        if (positions[row, column])
+                        {
+                            Position from = piece.Position;
+                            Position to = new Position(row, column);
+                            Piece capturedPiece = MovePiece(from, to);
+                            bool isCheckmate = IsInCheck(color);
+                            UndoMove(from, to, capturedPiece);
+                            if (!isCheckmate)
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        public void UndoMove(Position from, Position to, Piece capturedPiece)
         {
             Piece piece = Board.RemovePiece(to);
             piece.RemoveMovesQuantity();
-            if (pieceCaptured != null)
+            if (capturedPiece != null)
             {
-                Board.AddPiece(to, pieceCaptured);
-                _capturedPieces.Remove(pieceCaptured);
+                Board.AddPiece(to, capturedPiece);
+                _capturedPieces.Remove(capturedPiece);
             }
             Board.AddPiece(from, piece);
         }

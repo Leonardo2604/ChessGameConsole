@@ -88,10 +88,19 @@ namespace ChessGameConsole
             DrawCapturedPieces(match);
             Console.WriteLine();
             Console.WriteLine($"Turno: {match.Turn}");
-            Console.WriteLine($"Aguardando jogada: {match.CurrentPlayer}");
-            if (match.InCheck)
+
+            if (!match.Finished)
             {
-                Console.WriteLine("XEQUE!");
+                Console.WriteLine($"Aguardando jogada: {match.CurrentPlayer}");
+                if (match.InCheck)
+                {
+                    Console.WriteLine("XEQUE!");
+                }
+            }
+            else
+            {
+                Console.WriteLine("XEQUEMATE!");
+                Console.WriteLine($"Vencedor: {match.CurrentPlayer}");
             }
         }
 
