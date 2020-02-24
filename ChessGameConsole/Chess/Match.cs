@@ -212,7 +212,7 @@ namespace ChessGameConsole.Chess
 
         public void ValidatePositionTo(Position from, Position to)
         {
-            if (!Board.Find(from).CanMoveTo(to))
+            if (!Board.Find(from).IsPossibleMove(to))
             {
                 throw new ChessBoardException("Posição de destino inválida!");
             }
