@@ -1,21 +1,21 @@
 ﻿using System;
 using ChessGameConsole.Board;
+using ChessGameConsole.Board.Exceptions;
 
 namespace ChessGameConsole.Chess
 {
     class Match
     {
-        private int _turn;
-        private Color _currentPlayer;
-
+        public Color CurrentPlayer { get; private set; }
+        public int Turn { get; private set; }
         public ChessBoard Board { get; private set; }
         public bool Finished { get; private set; }
 
         public Match()
         {
             Board = new ChessBoard();
-            _turn = 1;
-            _currentPlayer = Color.White;
+            Turn = 1;
+            CurrentPlayer = Color.White;
             Finished = false;
             StartPieces();
         }
@@ -31,7 +31,7 @@ namespace ChessGameConsole.Chess
             Board.AddPiece(new ChessPosition('h', 8).ToPosition(), new Tower(Color.Black, Board));
         }
 
-        public void MovePiece(Position from, Position to)
+        private void MovePiece(Position from, Position to)
         {
             Piece piece = Board.RemovePiece(from);
             if (piece != null)
@@ -39,6 +39,53 @@ namespace ChessGameConsole.Chess
                 Piece capturedPiece = Board.RemovePiece(to);
                 piece.SetMoved();
                 Board.AddPiece(to, piece);
+            }
+        }
+
+        private void ChangePlayer()
+        {
+            if (CurrentPlayer == Color.Black)
+            {
+                CurrentPlayer = Color.White;
+            }
+            else
+            {
+                CurrentPlayer = Color.Black;
+            }
+        }
+
+        public void PeformMove(Position from, Position to) 
+        {
+            MovePiece(from, to);
+            Turn++;
+            ChangePlayer();
+        }
+
+        public void ValidatePositionFrom(Position position)
+        {
+            Piece piece = Board.Find(position);
+
+            if (piece == null)
+            {
+                throw new ChessBoardException("Não existe peça na posição escolhida!");
+            }
+
+            if (piece.Color != CurrentPlayer)
+            {
+                throw new ChessBoardException("A peça de origem escolhida não é sua!");
+            }
+
+            if (!piece.ExistsPossibleMoves())
+            {
+                throw new ChessBoardException("Não há movimentos possíveis para a peça de origem escolhida!");
+            }
+        }
+
+        public void ValidatePositionTo(Position from, Position to)
+        {
+            if (!Board.Find(from).CanMoveTo(to))
+            {
+                throw new ChessBoardException("Posição de destino inválida!");
             }
         }
     }

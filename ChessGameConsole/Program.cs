@@ -15,26 +15,37 @@ namespace ChessGameConsole
 
                 while(!match.Finished)
                 {
-                    Screen.Clear();
-                    Screen.DrawBoard(match.Board);
-
-                    Console.WriteLine();
-                    Console.Write("Origem: ");
-                    Position from = Screen.ReadChessPosition().ToPosition();
-
-                    Piece piece = match.Board.Find(from);
-
-                    if (piece != null)
+                    try
                     {
                         Screen.Clear();
-                        Screen.DrawBoard(match.Board, piece.GetPossibleMoves());
+                        Screen.DrawBoard(match.Board);
+
+                        Console.WriteLine();
+                        Console.WriteLine($"Turno: {match.Turn}");
+                        Console.WriteLine($"Aguardando jogada: {match.CurrentPlayer}");
+
+                        Console.WriteLine();
+                        Console.Write("Origem: ");
+                        Position from = Screen.ReadChessPosition().ToPosition();
+
+                        match.ValidatePositionFrom(from);
+
+                        Screen.Clear();
+                        Screen.DrawBoard(match.Board, match.Board.Find(from).GetPossibleMoves());
+
+                        Console.WriteLine();
+                        Console.Write("Destino: ");
+                        Position to = Screen.ReadChessPosition().ToPosition();
+
+                        match.ValidatePositionTo(from, to);
+
+                        match.PeformMove(from, to);
                     }
-
-                    Console.WriteLine();
-                    Console.Write("Destino: ");
-                    Position to = Screen.ReadChessPosition().ToPosition();
-
-                    match.MovePiece(from, to);
+                    catch (ChessBoardException e) 
+                    {
+                        Console.WriteLine(e.Message);
+                        Console.ReadLine();
+                    }
                 }
                 
             }
