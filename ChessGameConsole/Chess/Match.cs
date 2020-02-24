@@ -13,6 +13,7 @@ namespace ChessGameConsole.Chess
         public int Turn { get; private set; }
         public ChessBoard Board { get; private set; }
         public bool Finished { get; private set; }
+        public bool InCheck { get; private set; }
 
         public Match()
         {
@@ -20,9 +21,60 @@ namespace ChessGameConsole.Chess
             Turn = 1;
             CurrentPlayer = Color.White;
             Finished = false;
+            InCheck = false;
             _pieces = new HashSet<Piece>();
             _capturedPieces = new HashSet<Piece>();
             StartPieces();
+        }
+
+        private Piece MovePiece(Position from, Position to)
+        {
+            Piece piece = Board.RemovePiece(from);
+            piece.AddMovesQuantity();
+            Piece capturedPiece = Board.RemovePiece(to);
+            Board.AddPiece(to, piece);
+
+            if (capturedPiece != null)
+            {
+                _capturedPieces.Add(capturedPiece);
+            }
+
+            return capturedPiece;
+        }
+
+        private void ChangePlayer()
+        {
+            if (CurrentPlayer == Color.Black)
+            {
+                CurrentPlayer = Color.White;
+            }
+            else
+            {
+                CurrentPlayer = Color.Black;
+            }
+        }
+
+        private Color GetAdversary(Color color)
+        {
+            if (color == Color.White)
+            {
+                return Color.Black;
+            }
+
+            return Color.White;
+        }
+
+        private Piece GetKing(Color color)
+        {
+            foreach (Piece piece in GetPiecesInGame(color))
+            {
+                if (piece is King)
+                {
+                    return piece;
+                }
+            }
+
+            return null;
         }
 
         public void AddNewPiece(char column, int row, Piece piece)
@@ -42,36 +94,59 @@ namespace ChessGameConsole.Chess
             AddNewPiece('h', 8, new Tower(Color.Black, Board));
         }
 
-        private void MovePiece(Position from, Position to)
+        public bool IsInCheck(Color color)
         {
-            Piece piece = Board.RemovePiece(from);
-            piece.SetMoved();
-            Piece capturedPiece = Board.RemovePiece(to);
-            Board.AddPiece(to, piece);
-            
-            if (capturedPiece != null)
+            Piece king = GetKing(color);
+            if(king == null)
             {
-                _capturedPieces.Add(capturedPiece);
+                throw new ChessBoardException($"Não tem o rei da cor {color} no tabuleiro!");
             }
-        }
 
-        private void ChangePlayer()
-        {
-            if (CurrentPlayer == Color.Black)
+            foreach(Piece piece in GetPiecesInGame(GetAdversary(color)))
             {
-                CurrentPlayer = Color.White;
+                bool[,] positions = piece.GetPossibleMoves();
+                if (positions[king.Position.Row, king.Position.Column])
+                {
+                    return true;
+                }
             }
-            else
-            {
-                CurrentPlayer = Color.Black;
-            }
+
+            return false;
         }
 
         public void PeformMove(Position from, Position to) 
         {
-            MovePiece(from, to);
+            Piece pieceCaptured = MovePiece(from, to);
+
+            if (IsInCheck(CurrentPlayer))
+            {
+                UndoMove(from, to, pieceCaptured);
+                throw new ChessBoardException("Você não pode se colocar em xeque!");
+            }
+
+            if (IsInCheck(GetAdversary(CurrentPlayer)))
+            {
+                InCheck = true;
+            } 
+            else
+            {
+                InCheck = false;
+            }
+
             Turn++;
             ChangePlayer();
+        }
+
+        public void UndoMove(Position from, Position to, Piece pieceCaptured)
+        {
+            Piece piece = Board.RemovePiece(to);
+            piece.RemoveMovesQuantity();
+            if (pieceCaptured != null)
+            {
+                Board.AddPiece(to, pieceCaptured);
+                _capturedPieces.Remove(pieceCaptured);
+            }
+            Board.AddPiece(from, piece);
         }
 
         public void ValidatePositionFrom(Position position)

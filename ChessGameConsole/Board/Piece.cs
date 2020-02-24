@@ -6,7 +6,7 @@
 
         public Color Color { get; protected set; }
         
-        public bool Moved { get; protected set; }
+        public int MovesQuantity { get; protected set; }
         
         public ChessBoard Board { get; protected set; }
 
@@ -15,12 +15,17 @@
             Position = null;
             Color = color;
             Board = board;
-            Moved = false;
+            MovesQuantity = 0;
         }
 
-        public void SetMoved()
+        public void AddMovesQuantity()
         {
-            Moved = true;
+            MovesQuantity++;
+        }
+
+        public void RemoveMovesQuantity()
+        {
+            MovesQuantity--;
         }
 
         public bool ExistsPossibleMoves()
