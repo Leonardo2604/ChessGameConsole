@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using ChessGameConsole.Board;
 using ChessGameConsole.Board.Exceptions;
 
@@ -6,6 +6,9 @@ namespace ChessGameConsole.Chess
 {
     class Match
     {
+        private HashSet<Piece> _pieces;
+        private HashSet<Piece> _capturedPieces;
+
         public Color CurrentPlayer { get; private set; }
         public int Turn { get; private set; }
         public ChessBoard Board { get; private set; }
@@ -17,28 +20,38 @@ namespace ChessGameConsole.Chess
             Turn = 1;
             CurrentPlayer = Color.White;
             Finished = false;
+            _pieces = new HashSet<Piece>();
+            _capturedPieces = new HashSet<Piece>();
             StartPieces();
+        }
+
+        public void AddNewPiece(char column, int row, Piece piece)
+        {
+            Board.AddPiece(new ChessPosition(column, row).ToPosition(), piece);
+            _pieces.Add(piece);
         }
 
         public void StartPieces()
         {
-            Board.AddPiece(new ChessPosition('a', 1).ToPosition(), new Tower(Color.White, Board));
-            Board.AddPiece(new ChessPosition('e', 1).ToPosition(), new King(Color.White, Board));
-            Board.AddPiece(new ChessPosition('h', 1).ToPosition(), new Tower(Color.White, Board));
+            AddNewPiece('a', 1, new Tower(Color.White, Board));
+            AddNewPiece('e', 1, new King(Color.White, Board));
+            AddNewPiece('h', 1, new Tower(Color.White, Board));
 
-            Board.AddPiece(new ChessPosition('a', 8).ToPosition(), new Tower(Color.Black, Board));
-            Board.AddPiece(new ChessPosition('e', 8).ToPosition(), new King(Color.Black, Board));
-            Board.AddPiece(new ChessPosition('h', 8).ToPosition(), new Tower(Color.Black, Board));
+            AddNewPiece('a', 8, new Tower(Color.Black, Board));
+            AddNewPiece('e', 8, new King(Color.Black, Board));
+            AddNewPiece('h', 8, new Tower(Color.Black, Board));
         }
 
         private void MovePiece(Position from, Position to)
         {
             Piece piece = Board.RemovePiece(from);
-            if (piece != null)
+            piece.SetMoved();
+            Piece capturedPiece = Board.RemovePiece(to);
+            Board.AddPiece(to, piece);
+            
+            if (capturedPiece != null)
             {
-                Piece capturedPiece = Board.RemovePiece(to);
-                piece.SetMoved();
-                Board.AddPiece(to, piece);
+                _capturedPieces.Add(capturedPiece);
             }
         }
 
@@ -87,6 +100,38 @@ namespace ChessGameConsole.Chess
             {
                 throw new ChessBoardException("Posição de destino inválida!");
             }
+        }
+
+        public HashSet<Piece> GetCapturedPieces(Color color)
+        {
+            HashSet<Piece> pieces = new HashSet<Piece>();
+
+            foreach(Piece piece in _capturedPieces)
+            {
+                if (piece.Color == color)
+                {
+                    pieces.Add(piece);
+                }
+            }
+
+            return pieces;
+        }
+
+        public HashSet<Piece> GetPiecesInGame(Color color)
+        {
+            HashSet<Piece> pieces = new HashSet<Piece>();
+
+            foreach (Piece piece in _pieces)
+            {
+                if (piece.Color == color)
+                {
+                    pieces.Add(piece);
+                }
+            }
+
+            pieces.ExceptWith(GetCapturedPieces(color));
+
+            return pieces;
         }
     }
 }

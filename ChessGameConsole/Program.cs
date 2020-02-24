@@ -18,11 +18,7 @@ namespace ChessGameConsole
                     try
                     {
                         Screen.Clear();
-                        Screen.DrawBoard(match.Board);
-
-                        Console.WriteLine();
-                        Console.WriteLine($"Turno: {match.Turn}");
-                        Console.WriteLine($"Aguardando jogada: {match.CurrentPlayer}");
+                        Screen.DrawMatch(match);
 
                         Console.WriteLine();
                         Console.Write("Origem: ");

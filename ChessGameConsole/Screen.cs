@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using ChessGameConsole.Board;
 using ChessGameConsole.Chess;
 
@@ -19,6 +20,30 @@ namespace ChessGameConsole
                 Console.WriteLine();
             }
             Console.WriteLine("  a b c d e f g h");
+        }
+
+        private static void DrawPiece(Piece piece)
+        {
+            if (piece == null)
+            {
+                Console.Write("- ");
+            }
+            else
+            {
+                if (piece.Color == Color.White)
+                {
+                    Console.Write(piece);
+                }
+                else
+                {
+                    ConsoleColor temp = Console.ForegroundColor;
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.Write(piece);
+                    Console.ForegroundColor = temp;
+                }
+
+                Console.Write(" ");
+            }
         }
 
         public static void DrawBoard(ChessBoard board, bool[,] possibleMoves)
@@ -56,28 +81,40 @@ namespace ChessGameConsole
             return new ChessPosition(column, row);
         }
 
-        private static void DrawPiece(Piece piece)
+        public static void DrawMatch(Match match)
         {
-            if (piece == null)
-            {
-                Console.Write("- ");
-            }
-            else
-            {
-                if (piece.Color == Color.White)
-                {
-                    Console.Write(piece);
-                }
-                else
-                {
-                    ConsoleColor temp = Console.ForegroundColor;
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.Write(piece);
-                    Console.ForegroundColor = temp;
-                }
+            DrawBoard(match.Board);
+            Console.WriteLine();
+            DrawCapturedPieces(match);
+            Console.WriteLine();
+            Console.WriteLine($"Turno: {match.Turn}");
+            Console.WriteLine($"Aguardando jogada: {match.CurrentPlayer}");
+        }
 
-                Console.Write(" ");
+        public static void DrawCapturedPieces(Match match)
+        {
+            Console.WriteLine("Peças capturadas: ");
+            Console.Write("Brancas: ");
+            DrawParts(match.GetCapturedPieces(Color.White));
+            
+            Console.WriteLine();
+
+            Console.Write("Pretas: ");
+            ConsoleColor defaultColor = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            DrawParts(match.GetCapturedPieces(Color.Black));
+            Console.ForegroundColor = defaultColor;
+            Console.WriteLine();
+        }
+
+        public static void DrawParts(HashSet<Piece> pieces)
+        {
+            Console.Write("[");
+            foreach(Piece piece in pieces)
+            {
+                Console.Write($"{piece} ");
             }
+            Console.Write("]");
         }
     }
 }
