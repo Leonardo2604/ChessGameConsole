@@ -1,18 +1,32 @@
 ﻿using ChessGameConsole.Board;
+using ChessGameConsole.Chess;
 
 namespace ChessGameConsole.Chess
 {
     class King : Piece
     {
-        public King(Color color, ChessBoard board) : base(color, board)
-        {
+        private Match _match;
 
+        public King(Color color, ChessBoard board, Match match) : base(color, board)
+        {
+            _match = match;
         }
 
         private bool CanMove(Position position)
         {
             Piece piece = Board.Find(position);
             return (piece == null || piece.Color != Color);
+        }
+
+        private bool RookToCastleTest(Position position)
+        {
+            Piece piece = Board.Find(position);
+            return (
+                piece != null
+                && piece is Rook
+                && piece.Color == Color
+                && piece.MovesQuantity == 0
+            );
         }
 
         public override bool[,] GetPossibleMoves()
@@ -74,6 +88,41 @@ namespace ChessGameConsole.Chess
             if (Board.ValidPositon(position) && CanMove(position))
             {
                 positions[position.Row, position.Column] = true;
+            }
+
+            // #jogadaespecial roque
+            if (MovesQuantity == 0 && !_match.InCheck)
+            {
+                // #jogadaespecial roque pequeno
+                Position rookPosition1 = new Position(Position.Row, Position.Column + 3);
+                if (RookToCastleTest(rookPosition1))
+                {
+                    Position bishopPosition = new Position(Position.Row, Position.Column + 1);
+                    Position knightPosition = new Position(Position.Row, Position.Column + 2);
+
+                    if (Board.Find(bishopPosition) == null && Board.Find(knightPosition) == null)
+                    {
+                        positions[Position.Row, Position.Column + 2] = true;
+                    }
+                }
+
+                // #jogadaespecial roque grande
+                Position rookPosition2 = new Position(Position.Row, Position.Column - 4);
+                if (RookToCastleTest(rookPosition2))
+                {
+                    Position queenPosition = new Position(Position.Row, Position.Column - 1);
+                    Position bishopPosition = new Position(Position.Row, Position.Column - 2);
+                    Position knightPosition = new Position(Position.Row, Position.Column - 3);
+
+                    if (
+                        Board.Find(queenPosition) == null
+                        && Board.Find(bishopPosition) == null
+                        && Board.Find(knightPosition) == null
+                    )
+                    {
+                        positions[Position.Row, Position.Column - 2] = true;
+                    }
+                }
             }
 
             return positions;

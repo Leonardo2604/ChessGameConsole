@@ -39,6 +39,22 @@ namespace ChessGameConsole.Chess
                 _capturedPieces.Add(capturedPiece);
             }
 
+            //#jogadaespecial roque pequeno
+            if (piece is King && to.Column == from.Column + 2)
+            {
+                Position rookPositionFrom = new Position(from.Row, from.Column + 3);
+                Position rookPositionTo = new Position(from.Row, from.Column + 1);
+                MovePiece(rookPositionFrom, rookPositionTo);
+            }
+
+            //#jogadaespecial roque grande
+            if (piece is King && to.Column == from.Column - 2)
+            {
+                Position rookPositionFrom = new Position(from.Row, from.Column - 4);
+                Position rookPositionTo = new Position(from.Row, from.Column - 1);
+                MovePiece(rookPositionFrom, rookPositionTo);
+            }
+
             return capturedPiece;
         }
 
@@ -89,7 +105,7 @@ namespace ChessGameConsole.Chess
             AddNewPiece('b', 1, new Knight(Color.White, Board));
             AddNewPiece('c', 1, new Bishop(Color.White, Board));
             AddNewPiece('d', 1, new Queen(Color.White, Board));
-            AddNewPiece('e', 1, new King(Color.White, Board));
+            AddNewPiece('e', 1, new King(Color.White, Board, this));
             AddNewPiece('f', 1, new Bishop(Color.White, Board));
             AddNewPiece('g', 1, new Knight(Color.White, Board));
             AddNewPiece('h', 1, new Rook(Color.White, Board));
@@ -106,7 +122,7 @@ namespace ChessGameConsole.Chess
             AddNewPiece('b', 8, new Knight(Color.Black, Board));
             AddNewPiece('c', 8, new Bishop(Color.Black, Board));
             AddNewPiece('d', 8, new Queen(Color.Black, Board));
-            AddNewPiece('e', 8, new King(Color.Black, Board));
+            AddNewPiece('e', 8, new King(Color.Black, Board, this));
             AddNewPiece('f', 8, new Bishop(Color.Black, Board));
             AddNewPiece('g', 8, new Knight(Color.Black, Board));
             AddNewPiece('h', 8, new Rook(Color.Black, Board));
@@ -214,6 +230,22 @@ namespace ChessGameConsole.Chess
                 _capturedPieces.Remove(capturedPiece);
             }
             Board.AddPiece(from, piece);
+
+            //#jogadaespecial roque pequeno
+            if (piece is King && to.Column == from.Column + 2)
+            {
+                Position rookPositionFrom = new Position(from.Row, from.Column + 3);
+                Position rookPositionTo = new Position(from.Row, from.Column + 1);
+                UndoMove(rookPositionFrom, rookPositionTo, null);
+            }
+
+            //#jogadaespecial roque grande
+            if (piece is King && to.Column == from.Column - 2)
+            {
+                Position rookPositionFrom = new Position(from.Row, from.Column - 4);
+                Position rookPositionTo = new Position(from.Row, from.Column - 1);
+                UndoMove(rookPositionFrom, rookPositionTo, null);
+            }
         }
 
         public void ValidatePositionFrom(Position position)
