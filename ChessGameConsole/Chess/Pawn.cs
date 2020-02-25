@@ -4,9 +4,12 @@ namespace ChessGameConsole.Chess
 {
     class Pawn : Piece
     {
-        public Pawn(Color color, ChessBoard board) : base(color, board)
-        {
 
+        private Match _match;
+
+        public Pawn(Color color, ChessBoard board, Match match) : base(color, board)
+        {
+            _match = match;
         }
 
         private bool ExisteEnemy(Position position)
@@ -54,6 +57,30 @@ namespace ChessGameConsole.Chess
                 {
                     positions[position.Row, position.Column] = true;
                 }
+
+                // #jogadaespecial en passant
+                if (Position.Row == 3)
+                {
+                    Position left = new Position(Position.Row, Position.Column - 1);
+                    if (
+                        Board.ValidPositon(left) 
+                        && ExisteEnemy(left)
+                        && Board.Find(left) == _match.VulnerableEnPassant
+                    )
+                    {
+                        positions[left.Row - 1, left.Column] = true;
+                    }
+
+                    Position right = new Position(Position.Row, Position.Column + 1);
+                    if (
+                        Board.ValidPositon(right)
+                        && ExisteEnemy(right)
+                        && Board.Find(right) == _match.VulnerableEnPassant
+                    )
+                    {
+                        positions[right.Row - 1, right.Column] = true;
+                    }
+                }
             }
             else
             {
@@ -83,6 +110,30 @@ namespace ChessGameConsole.Chess
                 if (Board.ValidPositon(position) && ExisteEnemy(position))
                 {
                     positions[position.Row, position.Column] = true;
+                }
+
+                // #jogadaespecial en passant
+                if (Position.Row == 4)
+                {
+                    Position left = new Position(Position.Row, Position.Column - 1);
+                    if (
+                        Board.ValidPositon(left)
+                        && ExisteEnemy(left)
+                        && Board.Find(left) == _match.VulnerableEnPassant
+                    )
+                    {
+                        positions[left.Row + 1, left.Column] = true;
+                    }
+
+                    Position right = new Position(Position.Row, Position.Column + 1);
+                    if (
+                        Board.ValidPositon(right)
+                        && ExisteEnemy(right)
+                        && Board.Find(right) == _match.VulnerableEnPassant
+                    )
+                    {
+                        positions[right.Row + 1, right.Column] = true;
+                    }
                 }
             }
 

@@ -1,5 +1,4 @@
 ﻿using ChessGameConsole.Board;
-using ChessGameConsole.Chess;
 
 namespace ChessGameConsole.Chess
 {
